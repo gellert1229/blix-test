@@ -1,25 +1,30 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
-import {
-  StyleSheet,
-  BackHandler,
-  useWindowDimensions,
-  TouchableOpacity,
-  Platform,
-  ScrollView,
-  ActivityIndicator,
-} from "react-native";
-import BottomSheet, {
-  BottomSheetBackdrop,
-  BottomSheetFooterProps,
-} from "@gorhom/bottom-sheet";
-import { AIMessage, Message } from "@/types/types";
+import { getFollowUpQuestions, getResponse } from "@/api/fakeResponses";
+import { BottomSheetModalFooter } from "@/components/BottomSheetModalFooter";
+import { MessageBubble } from "@/components/MessageBubble";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { BottomSheetModalFooter } from "@/components/BottomSheetModalFooter";
-import { MessageBubble } from "@/components/MessageBubble";
-import { getResponse, getFollowUpQuestions } from "@/api/fakeResponses";
+import { AIMessage, Message } from "@/types/types";
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetFooterProps,
+} from "@gorhom/bottom-sheet";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  ActivityIndicator,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  useWindowDimensions,
+} from "react-native";
 
 type BottomSheetModalProps = {
   isVisible: boolean;
@@ -49,8 +54,15 @@ export const BottomSheetModal = ({
     ? currentSnapHeight - headerHeight - footerHeight
     : containerHeight - headerHeight - footerHeight;
 
+  // Auto-scroll when messages change
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [messages, isLoading]);
+
   const handleSend = async (message: string) => {
-    scrollViewRef.current?.scrollToEnd({ animated: true });
     const userMessage: Message = {
       id: Date.now().toString(),
       text: message,
@@ -77,10 +89,6 @@ export const BottomSheetModal = ({
     } finally {
       setIsLoading(false);
     }
-
-    setTimeout(() => {
-      scrollViewRef.current?.scrollToEnd({ animated: true });
-    }, 100);
   };
 
   const handleFollowUpPress = (question: string) => {
@@ -128,8 +136,10 @@ export const BottomSheetModal = ({
       enablePanDownToClose
       enableDynamicSizing={false}
       enableContentPanningGesture={false}
-      keyboardBehavior={Platform.OS === "ios" ? "interactive" : "extend"}
-      android_keyboardInputMode="adjustResize"
+      keyboardBehavior="fillParent"
+      android_keyboardInputMode="adjustPan"
+      keyboardBlurBehavior="restore"
+      bottomInset={Platform.OS === "android" ? 24 : 0}
       backdropComponent={(props) => (
         <BottomSheetBackdrop
           {...props}

@@ -7,8 +7,6 @@ import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
-const BUTTON_COLOR = "#2563EB"; // Nice blue color that works well in both modes
-
 const HomePage = () => {
   const colorScheme = useColorScheme();
   const [isVisible, setIsVisible] = useState(false);
@@ -44,7 +42,10 @@ const HomePage = () => {
       </ThemedView>
 
       <TouchableOpacity
-        style={[styles.button, { backgroundColor: BUTTON_COLOR }]}
+        style={[
+          styles.button,
+          { backgroundColor: Colors[colorScheme ?? "light"].button },
+        ]}
         onPress={handleOpen}
       >
         <ThemedText style={styles.buttonText}>Open Bottom Sheet</ThemedText>
