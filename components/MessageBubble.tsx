@@ -1,10 +1,10 @@
-import React from "react";
-import { StyleSheet, TouchableOpacity } from "react-native";
-import { AIMessage, Message } from "@/types/types";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { AIMessage, Message } from "@/types/types";
+import React from "react";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 type MessageBubbleProps = {
   message: Message | AIMessage;
@@ -20,7 +20,6 @@ export const MessageBubble = ({
 
   if (message.isUser) {
     // User message in bubble format
-    const userMessage = message as Message;
     return (
       <ThemedView style={styles.userMessageContainer}>
         <ThemedView

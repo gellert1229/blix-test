@@ -18,13 +18,13 @@ import React, {
   useState,
 } from "react";
 import {
-  ActivityIndicator,
   Platform,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   useWindowDimensions,
 } from "react-native";
+import { Loader } from "./Loader";
 
 type BottomSheetModalProps = {
   isVisible: boolean;
@@ -198,13 +198,7 @@ export const BottomSheetModal = ({
                 }
               />
             ))}
-            {isLoading && (
-              <ThemedView style={styles.loadingContainer}>
-                <ActivityIndicator
-                  color={Colors[colorScheme ?? "light"].text}
-                />
-              </ThemedView>
-            )}
+            {isLoading && <Loader />}
           </ScrollView>
         )}
       </ThemedView>
@@ -245,6 +239,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 120,
   },
+
   modalTitle: {
     marginBottom: 16,
   },
